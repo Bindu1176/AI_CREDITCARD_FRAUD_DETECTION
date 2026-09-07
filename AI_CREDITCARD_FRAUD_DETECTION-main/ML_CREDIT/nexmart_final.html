@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NexMart - AI Fraud Detection Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --bg: #0f172a;
+  --card: #1e293b;
+  --border: #334155;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* HEADER */
+header {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 0;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.logo-img {
+  width: 200px;
+  height: 50px;
+  border-radius: 0.5rem;
+}
+
+.merchant-select {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.merchant-select label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.merchant-select select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.cart-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cart-btn:hover {
+  background: var(--primary-dark);
+}
+
+/* PRODUCTS */
+.products-section {
+  padding: 3rem 0;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.product-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+}
+
+.product-image {
+  width: 100%;
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+}
+
+.product-info {
+  padding: 1.5rem;
+}
+
+.product-brand {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.product-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.product-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.add-to-cart-btn {
+  width: 100%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-to-cart-btn:hover {
+  background: var(--primary-dark);
+}
+
+/* CART PAGE */
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.cart-page {
+  padding: 3rem 0;
+}
+
+.cart-container {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.cart-items {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 2rem;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item-img {
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 0.5rem;
+}
+
+.cart-item-info h3 {
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.cart-item-brand {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.cart-item-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.remove-btn {
+  background: transparent;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.remove-btn:hover {
+  text-decoration: underline;
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+}
+
+.empty-cart h3 {
+  margin-bottom: 1rem;
+}
+
+.cart-summary {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  font-size: 0.95rem;
+}
+
+.summary-row.total {
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding-top: 1rem;
+  border-top: 2px solid var(--border);
+  margin-top: 0.5rem;
+}
+
+.checkout-cart-btn {
+  width: 100%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.2s;
+}
+
+.checkout-cart-btn:hover {
+  background: var(--primary-dark);
+}
+
+.continue-shopping {
+  width: 100%;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.75rem;
+  transition: all 0.2s;
+}
+
+.continue-shopping:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+
+/* FRAUD SIDEBAR */
+.fraud-sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 450px;
+  height: 100vh;
+  background: #0a0f1f;
+  border-left: 1px solid var(--border);
+  transform: translateX(100%);
+  transition: transform 0.3s;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.fraud-sidebar.active {
+  transform: translateX(0);
+}
+
+.sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.close-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
+.close-btn:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.sidebar-body {
+  padding: 2rem;
+}
+
+/* RISK CIRCLE */
+.risk-circle-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.risk-circle {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin-bottom: 1rem;
+}
+
+.risk-circle svg {
+  transform: rotate(-90deg);
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #1e293b;
+  stroke-width: 14;
+}
+
+.circle-progress {
+  fill: none;
+  stroke: var(--success);
+  stroke-width: 14;
+  stroke-linecap: round;
+  stroke-dasharray: 440;
+  stroke-dashoffset: 440;
+  transition: all 1s;
+}
+
+.risk-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.risk-score {
+  font-size: 3rem;
+  font-weight: 800;
+  font-family: monospace;
+}
+
+.risk-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.risk-verdict {
+  padding: 0.5rem 1.5rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+.verdict-low {
+  background: rgba(16,185,129,0.2);
+  color: var(--success);
+  border: 1px solid rgba(16,185,129,0.3);
+}
+
+.verdict-medium {
+  background: rgba(245,158,11,0.2);
+  color: var(--warning);
+  border: 1px solid rgba(245,158,11,0.3);
+}
+
+.verdict-high {
+  background: rgba(239,68,68,0.2);
+  color: var(--danger);
+  border: 1px solid rgba(239,68,68,0.3);
+}
+
+/* FLAGS */
+.flags-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.flags-title {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.flag-item {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  color: var(--danger);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.no-flags {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  padding: 1rem;
+}
+
+/* DETAILS */
+.details-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.detail-value {
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.detail-value.critical {
+  color: var(--danger);
+}
+
+.detail-value.warning {
+  color: var(--warning);
+}
+
+.detail-value.safe {
+  color: var(--success);
+}
+
+/* RESET BUTTON */
+.reset-btn {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.reset-btn:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  background: var(--card);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  width: 500px;
+  max-width: 90vw;
+  border: 1px solid var(--border);
+}
+
+.modal h2 {
+  margin-bottom: 1.5rem;
+}
+
+.modal-field {
+  margin-bottom: 1.25rem;
+}
+
+.modal-field label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.modal-field input,
+.modal-field select {
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal-btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.modal-btn-secondary {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  z-index: 3000;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* FOOTER */
+footer {
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  margin-top: 4rem;
+  padding: 3rem 0 1.5rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+  margin-bottom: 2rem;
+}
+
+.footer-section h3 {
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+.footer-section p {
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.footer-links {
+  list-style: none;
+}
+
+.footer-links li {
+  margin-bottom: 0.75rem;
+}
+
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: var(--primary);
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.tech-stack {
+  list-style: none;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 2;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <div class="header-content">
+      <div class="logo" onclick="showPage('products')">
+          <img src="images/logo.png" alt="NexMart" class="logo-img" />
+      </div>
+      <div class="merchant-select">
+        <label>Merchant Location:</label>
+        <select id="merchantSelect" onchange="updateMerchant()">
+          <option value="40.7128,-74.0060">New York, NY</option>
+          <option value="34.0522,-118.2437">Los Angeles, CA</option>
+          <option value="51.5074,-0.1278">London, UK</option>
+          <option value="48.8566,2.3522">Paris, France</option>
+          <option value="35.6762,139.6503">Tokyo, Japan</option>
+        </select>
+      </div>
+      <button class="cart-btn" onclick="viewCart()">
+        Cart (<span id="cartCount">0</span>)
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- PRODUCTS PAGE -->
+<div class="page active" id="productsPage">
+  <div class="products-section">
+    <div class="container">
+      <h1 class="section-title">Products</h1>
+      <div class="products-grid" id="productsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CART PAGE -->
+<div class="page" id="cartPage">
+  <div class="cart-page">
+    <div class="container">
+      <h1 class="section-title">Shopping Cart</h1>
+      <div id="cartContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FRAUD SIDEBAR -->
+<div class="fraud-sidebar" id="fraudSidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Fraud Analysis</div>
+    <button class="close-btn" onclick="closeSidebar()">×</button>
+  </div>
+  <div class="sidebar-body">
+    <!-- Risk Circle -->
+    <div class="risk-circle-wrap">
+      <div class="risk-circle">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle class="circle-bg" cx="80" cy="80" r="70"/>
+          <circle class="circle-progress" id="riskCircle" cx="80" cy="80" r="70"/>
+        </svg>
+        <div class="risk-label">
+          <div class="risk-score" id="riskScore">0%</div>
+          <div class="risk-text">RISK SCORE</div>
+        </div>
+      </div>
+      <div class="risk-verdict verdict-low" id="riskVerdict">LOW RISK</div>
+    </div>
+
+    <!-- Flags -->
+    <div class="flags-section">
+      <div class="flags-title">RISK FLAGS</div>
+      <div id="flagsList">
+        <div class="no-flags">No risk flags detected</div>
+      </div>
+    </div>
+
+    <!-- Details -->
+    <div class="details-section">
+      <div class="detail-row">
+        <span class="detail-label">Travel Speed</span>
+        <span class="detail-value" id="detailSpeed">0 km/h</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Distance</span>
+        <span class="detail-value" id="detailDist">0 km</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Time Gap</span>
+        <span class="detail-value" id="detailTime">0 hrs</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Amount Z-Score</span>
+        <span class="detail-value" id="detailZscore">0.00</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Velocity (1h)</span>
+        <span class="detail-value" id="detailVelocity">0 tx</span>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetSession()">Reset Session</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal">
+    <h2>Checkout</h2>
+    <div class="modal-field">
+  <label>Card Number</label>
+  <input type="text" id="cardNumber" value="4532015112830366" />
+  <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
+    <button onclick="document.getElementById('cardNumber').value='4532015112830366'" style="padding:0.5rem;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:0.25rem;cursor:pointer;font-size:0.75rem">Card 1</button>
+    <button onclick="document.getElementById('cardNumber').value='4916338506082832'" style="padding:0.5rem;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:0.25rem;cursor:pointer;font-size:0.75rem">Card 2</button>
+    <button onclick="document.getElementById('cardNumber').value='4024007134364842'" style="padding:0.5rem;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:0.25rem;cursor:pointer;font-size:0.75rem">Card 3</button>
+  </div>
+</div>
+    <div class="modal-field">
+      <label>Home City</label>
+      <select id="homeCity">
+        <option value="40.7128,-74.0060">New York, NY</option>
+        <option value="34.0522,-118.2437">Los Angeles, CA</option>
+        <option value="41.8781,-87.6298">Chicago, IL</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-secondary" onclick="closeCheckout()">Cancel</button>
+      <button class="modal-btn modal-btn-primary" onclick="processCheckout()">Complete Purchase</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-section">
+        <h3>NexMart</h3>
+        <p>AI-powered e-commerce with real-time fraud detection. Shop safely with machine learning technology protecting every transaction.</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="#" onclick="showPage('products')">Products</a></li>
+          <li><a href="#" onclick="viewCart()">Cart</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Technology</h3>
+        <ul class="tech-stack">
+          <li>Gradient Boosting ML</li>
+          <li>Flask API Backend</li>
+          <li>Real-time Fraud Detection</li>
+          <li>AUC-ROC: 0.9849</li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Legal</h3>
+        <ul class="footer-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <span>© 2026 NexMart. ML Fraud Detection Demo Project.</span>
+      <span>Built with Python, Flask & GradientBoosting</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// PRODUCTS DATA
+const PRODUCTS = [
+  {id:1, name:'MacBook Pro 16"', brand:'Apple', price:2499, image:'images/macbook.webp', fraudCat:'shopping_net'},
+  {id:2, name:'Nike Air Max 270', brand:'Nike', price:189.99, image:'images/nike.webp', fraudCat:'shopping_pos'},
+  {id:3, name:'Samsung 65" QLED', brand:'Samsung', price:1299, image:'images/tv.webp', fraudCat:'shopping_net'},
+  {id:4, name:'Dyson V15 Vacuum', brand:'Dyson', price:649, image:'images/vacuum.webp', fraudCat:'home'},
+  {id:5, name:'PlayStation 5', brand:'Sony', price:499, image:'images/ps5.webp', fraudCat:'shopping_net'},
+  {id:6, name:'Leather Jacket', brand:'Zara', price:299, image:'images/jacket.webp', fraudCat:'shopping_pos'},
+  {id:7, name:'Yoga Mat Pro', brand:'Lululemon', price:78, image:'images/yoga.webp', fraudCat:'health_fitness'},
+  {id:8, name:'Coffee Maker', brand:'Nespresso', price:199, image:'images/coffe.webp', fraudCat:'home'},
+  {id:9, name:'Grocery Basket', brand:'Whole Foods', price:67.43, image:'images/grocery.webp', fraudCat:'grocery_pos'},
+  {id:10, name:'Rolex Submariner', brand:'Rolex', price:8500, image:'images/rolex.webp', fraudCat:'shopping_net'},
+  {id:11, name:'Smart Watch', brand:'Apple', price:399, image:'images/watch.webp', fraudCat:'shopping_net'},
+  {id:12, name:'Dumbbell Set', brand:'Bowflex', price:329, image:'images/dumbbell.webp', fraudCat:'health_fitness'},
+];
+
+// GLOBAL STATE
+const API = 'http://localhost:5000';
+let cart = [];
+let merchantCoords = {lat:40.7128, lng:-74.0060};
+
+// INIT
+function init() {
+  renderProducts();
+  checkAPI();
+}
+
+function checkAPI() {
+  fetch(`${API}/ping`)
+    .then(r => r.json())
+    .then(d => console.log('API Status:', d))
+    .catch(e => console.error('API Offline:', e));
+}
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page + 'Page').classList.add('active');
+  window.scrollTo(0, 0);
+  
+  if (page === 'cart') {
+    renderCart();
+  }
+}
+
+function renderProducts() {
+  const grid = document.getElementById('productsGrid');
+  grid.innerHTML = PRODUCTS.map(p => `
+    <div class="product-card" onclick="addToCart(${p.id})">
+      <div class="product-image" style="background-image:url('${p.image}')"></div>
+      <div class="product-info">
+        <div class="product-brand">${p.brand}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-price">$${p.price.toFixed(2)}</div>
+        <button class="add-to-cart-btn">Add to Cart</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateMerchant() {
+  const val = document.getElementById('merchantSelect').value.split(',');
+  merchantCoords = {lat:parseFloat(val[0]), lng:parseFloat(val[1])};
+  console.log('Merchant updated:', merchantCoords);
+}
+
+function addToCart(id) {
+  const product = PRODUCTS.find(p => p.id === id);
+  cart.push(product);
+  document.getElementById('cartCount').textContent = cart.length;
+  showToast(`Added ${product.name} to cart`);
+}
+
+function viewCart() {
+  showPage('cart');
+}
+
+function renderCart() {
+  const content = document.getElementById('cartContent');
+  
+  if (cart.length === 0) {
+    content.innerHTML = `
+      <div class="empty-cart">
+        <h3>Your cart is empty</h3>
+        <p>Add some products to get started!</p>
+        <button class="cart-btn" onclick="showPage('products')" style="margin-top:1.5rem">Continue Shopping</button>
+      </div>
+    `;
+    return;
+  }
+  
+  const subtotal = cart.reduce((sum, p) => sum + p.price, 0);
+  
+  content.innerHTML = `
+    <div class="cart-container">
+      <div class="cart-items">
+        <h2 style="margin-bottom:1.5rem">Cart Items</h2>
+        ${cart.map((p, i) => `
+          <div class="cart-item">
+            <div class="cart-item-img" style="background-image:url('${p.image}')"></div>
+            <div class="cart-item-info">
+              <h3>${p.name}</h3>
+              <div class="cart-item-brand">${p.brand}</div>
+            </div>
+            <div>
+              <div class="cart-item-price">$${p.price.toFixed(2)}</div>
+              <button class="remove-btn" onclick="removeFromCart(${i})">Remove</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="cart-summary">
+        <h3 style="margin-bottom:1.5rem">Order Summary</h3>
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>$${subtotal.toFixed(2)}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span style="color:var(--success)">FREE</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span>$${subtotal.toFixed(2)}</span>
+        </div>
+        <button class="checkout-cart-btn" onclick="openCheckoutModal()">Proceed to Checkout</button>
+        <button class="continue-shopping" onclick="showPage('products')">Continue Shopping</button>
+      </div>
+    </div>
+  `;
+}
+
+function removeFromCart(idx) {
+  cart.splice(idx, 1);
+  document.getElementById('cartCount').textContent = cart.length;
+  renderCart();
+  showToast('Item removed from cart');
+}
+
+function closeCheckout() {
+  document.getElementById('checkoutModal').classList.remove('active');
+}
+
+function openCheckoutModal() {
+  if (cart.length === 0) {
+    showToast('Cart is empty');
+    return;
+  }
+  document.getElementById('checkoutModal').classList.add('active');
+}
+
+async function processCheckout() {
+  const total = cart.reduce((sum, p) => sum + p.price, 0);
+  const cc = document.getElementById('cardNumber').value;
+  const homeVal = document.getElementById('homeCity').value.split(',');
+  
+  const payload = {
+    cc_num: cc,
+    amt: total,
+    category: cart[0].fraudCat,
+    merch_lat: merchantCoords.lat,
+    merch_long: merchantCoords.lng,
+    user_lat: parseFloat(homeVal[0]),
+    user_long: parseFloat(homeVal[1]),
+    unix_time: Math.floor(Date.now()/1000),
+    age: 35,
+    gender: 'M',
+    state: 'NY',
+    city_pop: 8000000,
+  };
+  
+  try {
+    const res = await fetch(`${API}/score`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    
+    closeCheckout();
+    openSidebar();
+    updateFraudPanel(data);
+    
+    console.log('='.repeat(60));
+    console.log('FRAUD DETECTION RESULT');
+    console.log('='.repeat(60));
+    console.log('Fraud Probability:', data.fraud_probability + '%');
+    console.log('Verdict:', data.is_fraud ? 'FRAUD DETECTED' : 'TRANSACTION SAFE');
+    console.log('Flags:', data.flags.length > 0 ? data.flags : 'None');
+    console.log('Details:', data.details);
+    console.log('='.repeat(60));
+    
+    if (!data.is_fraud) {
+      setTimeout(() => {
+        showToast(`Order placed! Total: $${total.toFixed(2)}`);
+        cart = [];
+        document.getElementById('cartCount').textContent = '0';
+      }, 2000);
+    }
+  } catch (e) {
+    console.error('API Error:', e);
+    showToast('Cannot connect to fraud API');
+  }
+}
+
+function updateFraudPanel(data) {
+  const score = data.fraud_probability;
+  const circumference = 440;
+  const offset = circumference - (score/100) * circumference;
+  
+  const circle = document.getElementById('riskCircle');
+  circle.style.strokeDashoffset = offset;
+  
+  // Color coding
+  let color, verdictClass, verdictText;
+  if (score >= 70) {
+    color = 'var(--danger)';
+    verdictClass = 'verdict-high';
+    verdictText = 'HIGH RISK';
+  } else if (score >= 40) {
+    color = 'var(--warning)';
+    verdictClass = 'verdict-medium';
+    verdictText = 'MEDIUM RISK';
+  } else {
+    color = 'var(--success)';
+    verdictClass = 'verdict-low';
+    verdictText = 'LOW RISK';
+  }
+  
+  circle.style.stroke = color;
+  document.getElementById('riskScore').style.color = color;
+  document.getElementById('riskScore').textContent = score.toFixed(0) + '%';
+  
+  const verdict = document.getElementById('riskVerdict');
+  verdict.className = 'risk-verdict ' + verdictClass;
+  verdict.textContent = verdictText;
+  
+  // Flags
+  const flagsList = document.getElementById('flagsList');
+  if (data.flags.length > 0) {
+    flagsList.innerHTML = data.flags.map(f => `<div class="flag-item">${f}</div>`).join('');
+  } else {
+    flagsList.innerHTML = '<div class="no-flags">No risk flags detected</div>';
+  }
+  
+  // Details
+  const d = data.details;
+  
+  document.getElementById('detailSpeed').textContent = d.travel_speed_kmh.toFixed(0) + ' km/h';
+  document.getElementById('detailSpeed').className = 'detail-value ' + 
+    (d.travel_speed_kmh > 500 ? 'critical' : d.travel_speed_kmh > 200 ? 'warning' : 'safe');
+  
+  document.getElementById('detailDist').textContent = d.consec_dist_km.toFixed(0) + ' km';
+  document.getElementById('detailTime').textContent = d.time_gap_hours.toFixed(2) + ' hrs';
+  
+  document.getElementById('detailZscore').textContent = d.amt_zscore.toFixed(2);
+  document.getElementById('detailZscore').className = 'detail-value ' + 
+    (Math.abs(d.amt_zscore) > 3 ? 'critical' : Math.abs(d.amt_zscore) > 1.5 ? 'warning' : 'safe');
+  
+  document.getElementById('detailVelocity').textContent = d.tx_count_1h + ' tx';
+  document.getElementById('detailVelocity').className = 'detail-value ' + 
+    (d.tx_count_1h >= 5 ? 'critical' : d.tx_count_1h >= 3 ? 'warning' : 'safe');
+}
+
+function openSidebar() {
+  document.getElementById('fraudSidebar').classList.add('active');
+}
+
+function closeSidebar() {
+  document.getElementById('fraudSidebar').classList.remove('active');
+}
+
+async function resetSession() {
+  try {
+    await fetch(`${API}/reset`, {method:'POST'});
+    merchantCoords = {lat:40.7128, lng:-74.0060};
+    document.getElementById('merchantSelect').value = '40.7128,-74.0060';
+    
+    document.getElementById('riskCircle').style.strokeDashoffset = 440;
+    document.getElementById('riskScore').textContent = '0%';
+    document.getElementById('riskVerdict').className = 'risk-verdict verdict-low';
+    document.getElementById('riskVerdict').textContent = 'LOW RISK';
+    document.getElementById('flagsList').innerHTML = '<div class="no-flags">No risk flags detected</div>';
+    
+    ['detailSpeed','detailDist','detailTime','detailZscore','detailVelocity'].forEach(id => {
+      const el = document.getElementById(id);
+      el.className = 'detail-value';
+      el.textContent = id === 'detailSpeed' || id === 'detailVelocity' ? '0' : '0.00';
+    });
+    
+    showToast('Session reset successfully');
+    console.log('Session reset complete');
+  } catch (e) {
+    showToast('Reset failed');
+  }
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+init();
+</script>
+</body>
+</html>
